@@ -1,0 +1,2 @@
+All 18 original test function bodies preserved.
+Clean build: no compiler warnings or errors.

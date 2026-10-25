@@ -1,0 +1,3 @@
+Original demo output before V1 sections is unchanged.
+Two Martin books appear in descending publication year.
+Borrower, 14-day due period, return, all three vendor modes, structured summaries, currency display and four event types verified in final output.

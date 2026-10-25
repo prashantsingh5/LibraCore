@@ -1,0 +1,7 @@
+Fairness: unique/count-tested generator; separate generation/query timing; steady_clock; printed result counts; lookup strings prepared before timing.
+0: rejected, exit 1; dataset size must be 1..1000000
+-1: rejected, exit 1; dataset size must be a positive integer
+abc: rejected, exit 1; dataset size must be a positive integer
+12x: rejected, exit 1; dataset size must be a positive integer
+1000001: rejected, exit 1; dataset size must be 1..1000000
+10 20: rejected, exit 1; usage: bookmgmt_benchmark [1..1000000]

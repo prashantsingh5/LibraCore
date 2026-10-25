@@ -1,0 +1,347 @@
+=== Catalog ===
+[ElectronicResource] A001  The Pragmatic Programmer Audiobook (2026)  @ 90.00
+[Book] B001  Clean Code (2008)  @ 450.00
+[Book] B002  The C++ Programming Language (2013)  @ 1200.00
+[EBook] E001  Effective Modern C++ (2014)  @ 120.00
+[Journal] J001  ACM Computing Surveys (2026)  @ 300.00
+[ElectronicResource] R001  IEEE Xplore Digital Library (2026)  @ 150.00
+[ElectronicResource] R002  MATLAB Campus Licence (2026)  @ 400.00
+[Book] T001  Machine Learning for Information Retrieval (2026)  @ 0.00
+
+=== Details of R001 ===
+ElectronicResource R001
+  title: IEEE Xplore Digital Library
+  publisher: IEEE
+  year: 2026
+  unit price: 150.00
+  access url: https://ieeexplore.example
+  license: Annual subscription
+  platform fee: 2000.00
+
+=== Details of J001 ===
+Journal J001
+  title: ACM Computing Surveys
+  publisher: ACM
+  year: 2026
+  unit price: 300.00
+  issn: 0360-0300
+  issues per year: 4
+  subscription years: 2
+
+=== Details of E001 ===
+EBook E001
+  title: Effective Modern C++
+  publisher: O'Reilly Media
+  year: 2014
+  unit price: 120.00
+  access url: https://ebooks.example/effective-modern-cpp
+  license: Annual subscription
+  platform fee: 300.00
+  authors: Scott Meyers
+  isbn: 978-1491903995
+  format: EPUB
+  drm protected: yes
+
+=== Details of A001 ===
+ElectronicResource A001
+  title: The Pragmatic Programmer Audiobook
+  publisher: Audio Press
+  year: 2026
+  unit price: 90.00
+  access url: https://audio.example/pragmatic-programmer
+  license: Annual subscription
+  platform fee: 250.00
+  narrator: Narrator Example
+  duration: 720 minutes
+
+=== Details of T001 ===
+Book T001
+  title: Machine Learning for Information Retrieval
+  publisher: Example University
+  year: 2026
+  unit price: 0.00
+  university: Example University
+  degree: M.Tech
+  supervisor: Dr. A. Sharma
+
+=== Quotes ===
+4 copies of B002  = 5760.00  (hardcover includes 20% surcharge)
+20 seats of R001  = 5000.00  (incl. platform fee)
+1 copy of J001    = 600.00  (2-year subscription)
+3 seats of E001   = 660.00  (incl. platform fee)
+2 seats of A001   = 430.00  (incl. platform fee)
+1 copy of T001    = 0.00  (free thesis)
+
+=== Q5 Bulk Pricing ===
+10 copies of B001 = 4050.00  (10% print bulk discount)
+10 copies of B002 = 12960.00  (20% hardcover surcharge, then 10% bulk discount)
+10 copies of J001 = 5400.00  (2-year subscription with 10% print bulk discount)
+60 seats of R001  = 10250.00  (seats above 50 are half price)
+
+=== Acquisition report ===
+Order history (9 records)
+  #1   APPROVED   B001   x4   pre-tax    1800.00  post-tax    1800.00  Clean Code
+  #2   APPROVED   B002   x4   pre-tax    5760.00  post-tax    5760.00  The C++ Programming Language
+  #3   REJECTED   B001   x1   pre-tax     450.00  post-tax     450.00  Clean Code
+        reason: Book spend quota exceeded: cost 450.00, 440.00 remaining
+  #4   APPROVED   R001   x20  pre-tax    5000.00  post-tax    5000.00  IEEE Xplore Digital Library
+  #5   REJECTED   R002   x25  pre-tax   10000.00  post-tax   10000.00  MATLAB Campus Licence
+        reason: ElectronicResource unit quota exceeded: requested 25, 20 remaining
+  #6   APPROVED   R002   x15  pre-tax    6000.00  post-tax    6000.00  MATLAB Campus Licence
+  #7   REJECTED   R002   x5   pre-tax    2000.00  post-tax    2000.00  MATLAB Campus Licence
+        reason: ElectronicResource spend quota exceeded: cost 2000.00, 1000.00 remaining
+  #8   APPROVED   J001   x1   pre-tax     600.00  post-tax     600.00  ACM Computing Surveys
+  #9   REJECTED   X999   x1   pre-tax       0.00  post-tax       0.00  (unknown)
+        reason: resource not found: X999
+Total pre-tax: 19160.00
+Total post-tax: 19160.00
+
+=== Budget ===
+Budget: total 20000.00, spent 19160.00, remaining 840.00
+  Category            Units used/max    Titles used/max   Spend used/max
+  Book                8/10              2/-               7560.00/8000.00
+  ElectronicResource  35/40             2/-               11000.00/12000.00
+  Journal             1/2               1/-               600.00/1500.00
+  EBook               0/5               0/-               0.00/1000.00
+
+=== Holdings ===
+  A001: 0 seats
+  B001: 4 copies
+  B002: 4 copies
+  E001: 0 seats
+  J001: 1 copies
+  R001: 20 seats
+  R002: 15 seats
+  T001: 0 copies
+
+=== Direct purchase that breaks a quota ===
+QuotaExceededError: Book spend quota exceeded: cost 1440.00, 440.00 remaining
+
+=== Q6 Taxes ===
+Print tax rate: 10%
+Electronic tax rate: 20%
+1 copy of TB001: pre-tax 100.00, post-tax 110.00
+5 seats of TR001: pre-tax 100.00, post-tax 120.00
+
+=== Q6 Taxed Acquisition Report ===
+Order history (2 records)
+  #1   APPROVED   TB001  x2   pre-tax     200.00  post-tax     220.00  Tax Demo Book
+  #2   APPROVED   TR001  x5   pre-tax     100.00  post-tax     120.00  Tax Demo Database
+Total pre-tax: 300.00
+Total post-tax: 340.00
+
+=== Q6 Taxed Budget ===
+Budget: total 1000.00, spent 340.00, remaining 660.00
+  Category            Units used/max    Titles used/max   Spend used/max
+  Book                2/10              1/-               220.00/500.00
+  ElectronicResource  5/20              1/-               120.00/500.00
+  Journal             0/-               0/-               0.00/-
+  EBook               0/-               0/-               0.00/-
+
+=== Q7 Different-Title Quota ===
+Initial Book titles used: 0/2
+After buying QB001: 1/2 titles used
+After buying QB001 again: 1/2 titles used
+After buying QB002: 2/2 titles used
+QB003 rejected: Book title quota exceeded: maximum 2 different titles
+
+=== Q7 Title-Quota Budget ===
+Budget: total 5000.00, spent 400.00, remaining 4600.00
+  Category            Units used/max    Titles used/max   Spend used/max
+  Book                4/20              2/2               400.00/5000.00
+  ElectronicResource  0/-               0/-               0.00/-
+  Journal             0/-               0/-               0.00/-
+  EBook               0/-               0/-               0.00/-
+
+=== Q8 Cancellation ===
+Before cancellation:
+  CB001 holdings: 2 copies
+  Budget spent: 330.00
+  Book titles used: 2/2
+
+Cancelled purchase order #1
+After cancellation:
+  CB001 holdings: 0 copies
+  Budget spent: 110.00
+  Book titles used: 1/2
+
+=== Q8 Cancellation History ===
+Order history (3 records)
+  #1   APPROVED   CB001  x2   pre-tax     200.00  post-tax     220.00  Cancellation Demo Book
+  #2   APPROVED   CB002  x1   pre-tax     100.00  post-tax     110.00  Second Cancellation Demo Book
+  #3   CANCELLED  CB001  x2   pre-tax     200.00  post-tax     220.00  Cancellation Demo Book
+        cancels order #1
+Total pre-tax: 100.00
+Total post-tax: 110.00
+
+=== Q8 Budget After Refund ===
+Budget: total 1000.00, spent 110.00, remaining 890.00
+  Category            Units used/max    Titles used/max   Spend used/max
+  Book                1/10              1/2               110.00/1000.00
+  ElectronicResource  0/-               0/-               0.00/-
+  Journal             0/-               0/-               0.00/-
+  EBook               0/-               0/-               0.00/-
+
+=== Q9 Department Budgets ===
+After purchasing DB001 for both departments:
+  Computer Science spent: 200.00
+  Physics spent: 300.00
+  Global DB001 holdings: 5 copies
+Computer Science request rejected: Book unit quota exceeded: requested 2, 1 remaining
+Physics can still buy DB002 independently.
+
+=== Q9 Department Acquisition Report ===
+Order history (2 records)
+  #1   APPROVED   DB001  x2   pre-tax     200.00  post-tax     200.00  Algorithms for Departments  [department: Computer Science]
+  #2   APPROVED   DB001  x3   pre-tax     300.00  post-tax     300.00  Algorithms for Departments  [department: Physics]
+Total pre-tax: 500.00
+Total post-tax: 500.00
+
+=== Computer Science Budget ===
+Budget: total 1000.00, spent 200.00, remaining 800.00
+  Category            Units used/max    Titles used/max   Spend used/max
+  Book                2/3               1/2               200.00/500.00
+  ElectronicResource  0/-               0/-               0.00/-
+  Journal             0/-               0/-               0.00/-
+  EBook               0/-               0/-               0.00/-
+
+=== Physics Budget ===
+Budget: total 2000.00, spent 300.00, remaining 1700.00
+  Category            Units used/max    Titles used/max   Spend used/max
+  Book                3/10              1/3               300.00/1500.00
+  ElectronicResource  0/-               0/-               0.00/-
+  Journal             0/-               0/-               0.00/-
+  EBook               0/-               0/-               0.00/-
+
+=== Q10 Year-End Rollover ===
+Current year total: 1000.00
+Current year spent: 300.00
+Current year unspent: 700.00
+Carry-forward percentage: 50%
+New allocation: 2000.00
+Next year total budget: 2350.00
+Next year spent at start: 0.00
+Next year Book units used: 0
+Next year Book titles used: 0
+
+=== Q10 Next-Year Budget ===
+Budget: total 2350.00, spent 0.00, remaining 2350.00
+  Category            Units used/max    Titles used/max   Spend used/max
+  Book                0/10              0/3               0.00/800.00
+  ElectronicResource  0/20              0/4               0.00/900.00
+  Journal             0/-               0/-               0.00/-
+  EBook               0/-               0/-               0.00/-
+
+=== Q11 All-or-Nothing Batch ===
+Attempting atomic batch: AB001 x2, AB002 x2
+  AB001: rejected - batch rejected: another request in the all-or-nothing batch failed
+  AB002: rejected - Book unit quota exceeded: requested 2, 1 remaining
+After failed atomic batch:
+  AB001 holdings: 0
+  AB002 holdings: 0
+  Budget spent: 0.00
+
+Attempting valid atomic batch: AB001 x1, AB002 x1
+  AB001: approved
+  AB002: approved
+After successful atomic batch:
+  AB001 holdings: 1
+  AB002 holdings: 1
+  Budget spent: 200.00
+
+=== Q11 Atomic Batch Report ===
+Order history (4 records)
+  #1   REJECTED   AB001  x2   pre-tax     200.00  post-tax     200.00  Atomic Batch Book One
+        reason: batch rejected: another request in the all-or-nothing batch failed
+  #2   REJECTED   AB002  x2   pre-tax     200.00  post-tax     200.00  Atomic Batch Book Two
+        reason: Book unit quota exceeded: requested 2, 1 remaining
+  #3   APPROVED   AB001  x1   pre-tax     100.00  post-tax     100.00  Atomic Batch Book One
+  #4   APPROVED   AB002  x1   pre-tax     100.00  post-tax     100.00  Atomic Batch Book Two
+Total pre-tax: 200.00
+Total post-tax: 200.00
+
+=== Q12 Vendors ===
+Listed unit price: 120.00
+Vendor offers:
+  Campus Books: 100.00
+  Academic Supply: 80.00
+  University Store: 90.00
+Cheapest vendor: Academic Supply @ 80.00
+Quote for 2 copies including tax: 176.00
+Purchased from: Academic Supply
+Pre-tax order cost: 160.00
+Post-tax order cost: 176.00
+
+=== Q12 Vendor Acquisition Report ===
+Order history (1 records)
+  #1   APPROVED   VD001  x2   pre-tax     160.00  post-tax     176.00  Vendor Selection Book  [vendor: Academic Supply]
+Total pre-tax: 160.00
+Total post-tax: 176.00
+
+=== Q13 Catalog Searches ===
+
+Search by author: "meyers"
+  S003 - Effective Modern C++
+
+Search by ISBN: 978-0132350884
+  S001 - Clean Code
+
+Search by ISSN: 1234-5678
+  S004 - Journal of Software Engineering
+
+Combined identifier search: 978-1491903995
+  S003 - Effective Modern C++
+
+Publication years 2010-2026:
+  S003 - Effective Modern C++ (2014)
+  S004 - Journal of Software Engineering (2020)
+  S005 - Modern Research Database (2026)
+
+=== Q14 Lending ===
+Initial availability:
+  L001: 3 of 3 copies available
+  L002: 2 of 2 electronic sessions available
+
+After lending / starting sessions:
+  L001 lent: 2, available: 1
+  L002 active sessions: 2, available sessions: 0
+  Additional electronic session rejected: insufficient availability
+
+After one return / session end:
+  L001 lent: 1, available: 2
+  L002 active sessions: 1, available sessions: 1
+
+=== Q15 Currency-Aware Money ===
+USD example: USD 125.50
+EUR example: EUR 80.00
+USD same-currency addition: USD 150.00
+Mixed-currency addition rejected: currency mismatch: USD vs EUR
+
+--- Q15 USD Acquisition Workflow ---
+Budget currency: USD
+Cheapest vendor quote for 2 copies: USD 176.00
+Purchased from: Academic Export
+Pre-tax: USD 160.00
+Post-tax: USD 176.00
+Budget remaining: USD 824.00
+
+=== V1 Combined Search ===
+[Book] S001  Clean Code (2008)  @ 450.00
+
+=== V1 Lending Records ===
+L3: student-42 borrowed L001; due in 14 days
+Returned; borrower history contains 1 loan(s)
+
+=== V1 Vendor Selection ===
+Cheapest quote: INR 88.00; fastest quote: INR 110.00
+Approved request #1 from Express Books
+
+=== V1 Reporting ===
+Budget used: 22%; remaining INR 780.00
+Book units: 2; titles: 1
+Holdings: 5; borrowed: 2; active loans: 2
+Department default: INR 0.00 spent
+Department Computer Science: INR 200.00 spent
+Department Physics: INR 300.00 spent
+Acquisition counts: 1 approved, 1 cancelled
+Unified events: 8

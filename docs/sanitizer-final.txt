@@ -1,0 +1,16 @@
+[ 41%] Built target bookmgmt
+[ 48%] Built target demo
+[ 54%] Built target bookmgmt_benchmark
+[ 58%] Building CXX object CMakeFiles/bookmgmt_fault_tests.dir/tests/fault_injection.cpp.o
+[ 96%] Built target bookmgmt_tests
+[100%] Linking CXX executable bookmgmt_fault_tests
+[100%] Built target bookmgmt_fault_tests
+Test project /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized
+    Start 1: bookmgmt_tests
+1/2 Test #1: bookmgmt_tests ...................   Passed    0.03 sec
+    Start 2: bookmgmt_fault_tests
+2/2 Test #2: bookmgmt_fault_tests .............   Passed    0.01 sec
+
+100% tests passed out of 2
+
+Total Test time (real) =   0.05 sec

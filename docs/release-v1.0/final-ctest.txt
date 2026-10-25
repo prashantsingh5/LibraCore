@@ -1,0 +1,9 @@
+Test project /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build
+    Start 1: bookmgmt_tests
+1/2 Test #1: bookmgmt_tests ...................   Passed    0.01 sec
+    Start 2: bookmgmt_fault_tests
+2/2 Test #2: bookmgmt_fault_tests .............   Passed    0.00 sec
+
+100% tests passed out of 2
+
+Total Test time (real) =   0.01 sec

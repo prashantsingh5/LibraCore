@@ -1,0 +1,94 @@
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized
+[  3%] Building CXX object CMakeFiles/bookmgmt.dir/src/Money.cpp.o
+[  6%] Building CXX object CMakeFiles/bookmgmt.dir/src/Resource.cpp.o
+[  9%] Building CXX object CMakeFiles/bookmgmt.dir/src/Book.cpp.o
+[ 12%] Building CXX object CMakeFiles/bookmgmt.dir/src/MT26076_Journal.cpp.o
+[ 16%] Building CXX object CMakeFiles/bookmgmt.dir/src/ElectronicResource.cpp.o
+[ 19%] Building CXX object CMakeFiles/bookmgmt.dir/src/MT26076_EBook.cpp.o
+[ 22%] Building CXX object CMakeFiles/bookmgmt.dir/src/MT26076_AudioBook.cpp.o
+[ 25%] Building CXX object CMakeFiles/bookmgmt.dir/src/MT26076_Thesis.cpp.o
+[ 29%] Building CXX object CMakeFiles/bookmgmt.dir/src/Budget.cpp.o
+[ 32%] Building CXX object CMakeFiles/bookmgmt.dir/src/Lending.cpp.o
+[ 35%] Building CXX object CMakeFiles/bookmgmt.dir/src/Catalog.cpp.o
+[ 38%] Building CXX object CMakeFiles/bookmgmt.dir/src/Acquisition.cpp.o
+[ 41%] Linking CXX static library libbookmgmt.a
+[ 41%] Built target bookmgmt
+[ 45%] Building CXX object CMakeFiles/bookmgmt_benchmark.dir/benchmarks/benchmark_catalog.cpp.o
+[ 48%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_acquisition.cpp.o
+[ 54%] Building CXX object CMakeFiles/bookmgmt_fault_tests.dir/tests/fault_injection.cpp.o
+[ 54%] Building CXX object CMakeFiles/demo.dir/examples/demo.cpp.o
+[ 58%] Linking CXX executable bookmgmt_fault_tests
+[ 61%] Linking CXX executable bookmgmt_benchmark
+[ 61%] Built target bookmgmt_fault_tests
+[ 64%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_budget.cpp.o
+[ 64%] Built target bookmgmt_benchmark
+[ 67%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_catalog.cpp.o
+[ 70%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_generator.cpp.o
+[ 74%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_main.cpp.o
+[ 77%] Linking CXX executable demo
+[ 80%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_money.cpp.o
+[ 80%] Built target demo
+[ 83%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_resources.cpp.o
+[ 87%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_v1_acquisition.cpp.o
+[ 90%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_v1_lending.cpp.o
+[ 93%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_v1_reporting.cpp.o
+[ 96%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_v1_search.cpp.o
+[100%] Linking CXX executable bookmgmt_tests
+[100%] Built target bookmgmt_tests
+Test project /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized
+    Start 1: bookmgmt_tests
+1/2 Test #1: bookmgmt_tests ...................***Failed    0.04 sec
+==232==LeakSanitizer has encountered a fatal error.
+==232==HINT: For debugging, try setting environment variable LSAN_OPTIONS=verbosity=1:log_threads=1
+==232==HINT: LeakSanitizer does not work under ptrace (strace, gdb, etc)
+
+    Start 2: bookmgmt_fault_tests
+2/2 Test #2: bookmgmt_fault_tests .............***Failed    0.03 sec
+=================================================================
+==234==ERROR: AddressSanitizer: alloc-dealloc-mismatch (operator new vs free) on 0x50c000000400
+    #0 0x7f1b08fbf4d8 in free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:52
+    #1 0x55d2846d325b in operator delete(void*, unsigned long) /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/tests/fault_injection.cpp:16
+    #2 0x55d28475df0e in void std::__detail::__return_temporary_buffer<bookmgmt::Event>(bookmgmt::Event*, unsigned long) (/workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized/bookmgmt_fault_tests+0x269f0e) (BuildId: 01d55cd245c752ecec8f03db0444cf40ccfaace7)
+    #3 0x55d2847599f8 in std::_Temporary_buffer<__gnu_cxx::__normal_iterator<bookmgmt::Event*, std::vector<bookmgmt::Event, std::allocator<bookmgmt::Event> > >, bookmgmt::Event>::~_Temporary_buffer() (/workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized/bookmgmt_fault_tests+0x2659f8) (BuildId: 01d55cd245c752ecec8f03db0444cf40ccfaace7)
+    #4 0x55d284742320 in __stable_sort<__gnu_cxx::__normal_iterator<bookmgmt::Event*, std::vector<bookmgmt::Event> >, __gnu_cxx::__ops::_Iter_comp_iter<bookmgmt::Catalog::events() const::<lambda(const bookmgmt::Event&, const bookmgmt::Event&)> > > /usr/include/c++/13/bits/stl_algo.h:5052
+    #5 0x55d284741f30 in stable_sort<__gnu_cxx::__normal_iterator<bookmgmt::Event*, std::vector<bookmgmt::Event> >, bookmgmt::Catalog::events() const::<lambda(const bookmgmt::Event&, const bookmgmt::Event&)> > /usr/include/c++/13/bits/stl_algo.h:5119
+    #6 0x55d284741e1c in bookmgmt::Catalog::events() const /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/src/Lending.cpp:115
+    #7 0x55d2846d3e8c in main /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/tests/fault_injection.cpp:41
+    #8 0x7f1b0832e1c9  (/lib/x86_64-linux-gnu/libc.so.6+0x2a1c9) (BuildId: 274eec488d230825a136fa9c4d85370fed7a0a5e)
+    #9 0x7f1b0832e28a in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2a28a) (BuildId: 274eec488d230825a136fa9c4d85370fed7a0a5e)
+    #10 0x55d2846d3024 in _start (/workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized/bookmgmt_fault_tests+0x1df024) (BuildId: 01d55cd245c752ecec8f03db0444cf40ccfaace7)
+
+0x50c000000400 is located 0 bytes inside of 120-byte region [0x50c000000400,0x50c000000478)
+allocated by thread T0 here:
+    #0 0x7f1b08fc1840 in operator new(unsigned long, std::nothrow_t const&) ../../../../src/libsanitizer/asan/asan_new_delete.cpp:101
+    #1 0x55d28475dadd in std::pair<bookmgmt::Event*, long> std::get_temporary_buffer<bookmgmt::Event>(long) (/workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized/bookmgmt_fault_tests+0x269add) (BuildId: 01d55cd245c752ecec8f03db0444cf40ccfaace7)
+    #2 0x55d284759523 in std::_Temporary_buffer<__gnu_cxx::__normal_iterator<bookmgmt::Event*, std::vector<bookmgmt::Event, std::allocator<bookmgmt::Event> > >, bookmgmt::Event>::_Temporary_buffer(__gnu_cxx::__normal_iterator<bookmgmt::Event*, std::vector<bookmgmt::Event, std::allocator<bookmgmt::Event> > >, long) (/workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized/bookmgmt_fault_tests+0x265523) (BuildId: 01d55cd245c752ecec8f03db0444cf40ccfaace7)
+    #3 0x55d284742230 in __stable_sort<__gnu_cxx::__normal_iterator<bookmgmt::Event*, std::vector<bookmgmt::Event> >, __gnu_cxx::__ops::_Iter_comp_iter<bookmgmt::Catalog::events() const::<lambda(const bookmgmt::Event&, const bookmgmt::Event&)> > > /usr/include/c++/13/bits/stl_algo.h:5038
+    #4 0x55d284741f30 in stable_sort<__gnu_cxx::__normal_iterator<bookmgmt::Event*, std::vector<bookmgmt::Event> >, bookmgmt::Catalog::events() const::<lambda(const bookmgmt::Event&, const bookmgmt::Event&)> > /usr/include/c++/13/bits/stl_algo.h:5119
+    #5 0x55d284741e1c in bookmgmt::Catalog::events() const /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/src/Lending.cpp:115
+    #6 0x55d2846d3e8c in main /workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/tests/fault_injection.cpp:41
+    #7 0x7f1b0832e1c9  (/lib/x86_64-linux-gnu/libc.so.6+0x2a1c9) (BuildId: 274eec488d230825a136fa9c4d85370fed7a0a5e)
+    #8 0x7f1b0832e28a in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x2a28a) (BuildId: 274eec488d230825a136fa9c4d85370fed7a0a5e)
+    #9 0x55d2846d3024 in _start (/workspace/scratch/68e8a579ad19/oopd-a2-main/MT26076/build-sanitized/bookmgmt_fault_tests+0x1df024) (BuildId: 01d55cd245c752ecec8f03db0444cf40ccfaace7)
+
+SUMMARY: AddressSanitizer: alloc-dealloc-mismatch ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:52 in free
+==234==HINT: if you don't care about these errors you may set ASAN_OPTIONS=alloc_dealloc_mismatch=0
+==234==ABORTING
+
+
+0% tests passed, 2 tests failed out of 2
+
+Total Test time (real) =   0.07 sec
+
+The following tests FAILED:
+	  1 - bookmgmt_tests (Failed)
+	  2 - bookmgmt_fault_tests (Failed)
+Errors while running CTest

@@ -1,0 +1,8 @@
+Dataset: 100000 resources
+operation,elapsed_ms,matches
+generation,255.494,100000
+ID lookup (10000 calls),12.723,10000
+title search,49.710,20000
+author search,19.287,334
+combined search,49.091,2411
+year range,13.233,23398
