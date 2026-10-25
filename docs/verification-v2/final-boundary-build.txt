@@ -1,0 +1,16 @@
+[ 32%] Built target bookmgmt
+[ 37%] Built target bookmgmt_fault_tests
+[ 42%] Built target bookmgmt_benchmark
+[ 47%] Built target demo
+[ 77%] Built target bookmgmt_tests
+[ 80%] Building CXX object CMakeFiles/libracore_persistence.dir/src/v2/Mapping.cpp.o
+[ 82%] Building CXX object CMakeFiles/libracore_persistence.dir/src/v2/PostgresRepository.cpp.o
+[ 85%] Linking CXX static library liblibracore_persistence.a
+[ 85%] Built target libracore_persistence
+[ 87%] Linking CXX shared module python/_libracore.cpython-312-x86_64-linux-gnu.so
+[ 90%] Building CXX object CMakeFiles/libracore_mapping_tests.dir/tests/v2/test_mapping.cpp.o
+[ 92%] Linking CXX executable libracore_db_tests
+[ 95%] Built target libracore_db_tests
+[ 97%] Linking CXX executable libracore_mapping_tests
+[ 97%] Built target libracore_mapping_tests
+[100%] Built target _libracore

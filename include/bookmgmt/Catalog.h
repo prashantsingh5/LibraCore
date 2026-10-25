@@ -13,6 +13,8 @@
 
 namespace bookmgmt {
 
+struct PersistenceAccess; // V2 adapter: trusted relational state restoration only.
+
 enum class SearchSort { Id, TitleAscending, TitleDescending, YearAscending,
                         YearDescending, PriceAscending, PriceDescending };
 struct SearchQuery {
@@ -116,6 +118,7 @@ public:
         const std::function<bool(const Resource&)>& pred) const;
 
 private:
+    friend struct PersistenceAccess;
     friend class AcquisitionManager;
     Loan borrowImpl(const std::string&, const std::string&, int, Timestamp,
                     std::optional<Timestamp>, bool);

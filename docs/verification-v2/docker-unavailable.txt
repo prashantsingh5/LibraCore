@@ -1,0 +1,5 @@
+setup_v2.sh: exit 1
+Docker Compose/daemon unavailable. In Windows start Docker Desktop, enable Ubuntu WSL integration, then run this script inside WSL.
+
+test_v2.sh: exit 1
+Docker Compose/daemon unavailable. In Windows start Docker Desktop, enable Ubuntu WSL integration, then run this script inside WSL.

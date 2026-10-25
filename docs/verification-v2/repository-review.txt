@@ -1,0 +1,10 @@
+git status --short: unavailable: archive has no .git metadata
+git diff --stat: unavailable: archive has no .git metadata
+git diff: unavailable: archive has no .git metadata
+git ls-files: unavailable: archive has no .git metadata
+Private API key byte scan: PASS (values never printed)
+Uploaded private environment files were not modified or copied into the project.
+All original domain implementation .cpp files: byte-for-byte unchanged
+All original tests, demo and benchmark: byte-for-byte unchanged
+Modified original files: .gitignore, CMakeLists.txt, README.md, include/bookmgmt/Acquisition.h, include/bookmgmt/Budget.h, include/bookmgmt/Catalog.h
+Source archive excludes builds, binaries, caches, virtual environments and private .env files.

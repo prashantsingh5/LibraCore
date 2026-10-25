@@ -14,6 +14,8 @@
 
 namespace bookmgmt {
 
+struct PersistenceAccess; // V2 adapter: trusted relational state restoration only.
+
 struct Quota {
     int maxUnits;                       // maximum copies/seats
     Money maxSpend;                     // maximum money that may be spent
@@ -81,6 +83,7 @@ public:
     void print(std::ostream& os) const;
 
 private:
+    friend struct PersistenceAccess;
     void commitUnchecked(ResourceCategory, int, Money);
     void commitUnchecked(ResourceCategory, const std::string&, int, Money);
     enum class Failure { None, BadInput, Quota, Overall };

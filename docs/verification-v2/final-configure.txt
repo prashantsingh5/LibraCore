@@ -1,0 +1,15 @@
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PostgreSQL: /workspace/scratch/68e8a579ad19/deps-root/usr/lib/x86_64-linux-gnu/libpq.so (found version "16.15")
+-- Found nlohmann_json: /workspace/scratch/68e8a579ad19/deps-root/usr/share/cmake/nlohmann_json/nlohmann_jsonConfig.cmake (found suitable version "3.11.3", minimum required is "3.10")
+-- Found Python3: /workspace/scratch/68e8a579ad19/LibraCore-V2/.venv/bin/python (found suitable version "3.12.14", minimum required is "3.11") found components: Interpreter Development.Module
+-- Performing Test HAS_FLTO
+-- Performing Test HAS_FLTO - Success
+-- Found pybind11: /workspace/scratch/68e8a579ad19/LibraCore-V2/.venv/lib/python3.12/site-packages/pybind11/include (found version "2.13.6")
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/scratch/68e8a579ad19/LibraCore-V2/build-v2

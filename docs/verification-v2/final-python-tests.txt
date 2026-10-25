@@ -1,0 +1,36 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-8.3.5, pluggy-1.7.0
+rootdir: /workspace/scratch/68e8a579ad19/LibraCore-V2
+configfile: pyproject.toml
+plugins: anyio-4.9.0
+collected 111 items
+
+LibraCore-V2/python/tests/test_api.py ...........................        [ 24%]
+LibraCore-V2/python/tests/test_binding.py ..............                 [ 36%]
+LibraCore-V2/python/tests/test_database.py sssssssssssssssssssssssssssss [ 63%]
+ss                                                                       [ 64%]
+LibraCore-V2/python/tests/test_unit.py ................................. [ 94%]
+......                                                                   [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:23: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [6] LibraCore-V2/python/tests/test_database.py:29: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:39: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:50: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:59: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:65: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:75: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:81: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:89: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:97: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [5] LibraCore-V2/python/tests/test_database.py:106: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:132: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:138: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:146: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:151: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:168: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:172: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:176: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [1] LibraCore-V2/python/tests/test_database.py:183: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+SKIPPED [3] LibraCore-V2/python/tests/test_database.py:188: NOT EXECUTED — ENVIRONMENT BLOCKED: set LIBRACORE_RUN_DB_TESTS=1 with Docker test DB
+======================== 80 passed, 31 skipped in 1.10s ========================

@@ -1,0 +1,2 @@
+All seven shell scripts passed bash -n.
+Setup/test Docker-unavailable failure paths were exercised separately.

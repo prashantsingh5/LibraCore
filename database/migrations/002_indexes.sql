@@ -1,0 +1,16 @@
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX resources_title_trgm ON resources USING gin(lower(title) gin_trgm_ops);
+CREATE INDEX resources_year ON resources(publication_year,resource_id);
+CREATE INDEX resources_category ON resources(category,resource_id);
+CREATE INDEX resources_fts ON resources USING gin(to_tsvector('simple',title || ' ' || publisher));
+CREATE INDEX authors_name_trgm ON authors USING gin(lower(name) gin_trgm_ops);
+CREATE INDEX authors_fts ON authors USING gin(to_tsvector('simple',name));
+CREATE INDEX author_resources ON resource_authors(author_id,resource_id);
+CREATE INDEX details_isbn ON resource_details(isbn);
+CREATE INDEX details_issn ON resource_details(issn);
+CREATE INDEX loans_borrower ON loans(borrower_id,loan_id);
+CREATE INDEX loans_resource ON loans(resource_id,loan_id);
+CREATE INDEX loans_active ON loans(status) WHERE status=0;
+CREATE INDEX orders_resource ON purchase_records(resource_id,order_id);
+CREATE INDEX orders_department ON purchase_records(department_id,order_id);
+CREATE INDEX events_time ON audit_events(occurred_at DESC,event_id DESC);

@@ -1,0 +1,4 @@
+CTest: 2/2 passed.
+All tests passed.
+7 transaction scenarios passed 58 allocation-failure points.
+Demo exit code: 0.

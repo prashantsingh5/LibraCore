@@ -1,0 +1,4 @@
+002_indexes.sql: 16 SQL statements parsed
+001_initial_schema.sql: 21 SQL statements parsed
+60 repository SQL literals and combined search parsed
+Syntax parsing is NOT PostgreSQL execution or constraint/query planning verification.

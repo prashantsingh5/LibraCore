@@ -1,0 +1,49 @@
+[  5%] Building CXX object CMakeFiles/bookmgmt.dir/src/Money.cpp.o
+[  5%] Building CXX object CMakeFiles/bookmgmt.dir/src/Resource.cpp.o
+[  7%] Building CXX object CMakeFiles/bookmgmt.dir/src/MT26076_Journal.cpp.o
+[ 10%] Building CXX object CMakeFiles/bookmgmt.dir/src/Book.cpp.o
+[ 12%] Building CXX object CMakeFiles/bookmgmt.dir/src/ElectronicResource.cpp.o
+[ 15%] Building CXX object CMakeFiles/bookmgmt.dir/src/MT26076_EBook.cpp.o
+[ 17%] Building CXX object CMakeFiles/bookmgmt.dir/src/MT26076_AudioBook.cpp.o
+[ 20%] Building CXX object CMakeFiles/bookmgmt.dir/src/MT26076_Thesis.cpp.o
+[ 22%] Building CXX object CMakeFiles/bookmgmt.dir/src/Budget.cpp.o
+[ 25%] Building CXX object CMakeFiles/bookmgmt.dir/src/Lending.cpp.o
+[ 27%] Building CXX object CMakeFiles/bookmgmt.dir/src/Catalog.cpp.o
+[ 30%] Building CXX object CMakeFiles/bookmgmt.dir/src/Acquisition.cpp.o
+[ 32%] Linking CXX static library libbookmgmt.a
+[ 32%] Built target bookmgmt
+[ 35%] Building CXX object CMakeFiles/bookmgmt_fault_tests.dir/tests/fault_injection.cpp.o
+[ 37%] Building CXX object CMakeFiles/demo.dir/examples/demo.cpp.o
+[ 40%] Building CXX object CMakeFiles/bookmgmt_benchmark.dir/benchmarks/benchmark_catalog.cpp.o
+[ 42%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_acquisition.cpp.o
+[ 45%] Linking CXX executable bookmgmt_fault_tests
+[ 47%] Linking CXX executable bookmgmt_benchmark
+[ 47%] Built target bookmgmt_fault_tests
+[ 50%] Building CXX object CMakeFiles/libracore_persistence.dir/src/v2/Mapping.cpp.o
+[ 50%] Built target bookmgmt_benchmark
+[ 52%] Building CXX object CMakeFiles/libracore_persistence.dir/src/v2/PostgresRepository.cpp.o
+[ 55%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_budget.cpp.o
+[ 57%] Linking CXX executable demo
+[ 57%] Built target demo
+[ 60%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_catalog.cpp.o
+[ 62%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_generator.cpp.o
+[ 65%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_main.cpp.o
+[ 67%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_money.cpp.o
+[ 70%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_resources.cpp.o
+[ 72%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_v1_acquisition.cpp.o
+[ 75%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_v1_lending.cpp.o
+[ 77%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_v1_reporting.cpp.o
+[ 80%] Building CXX object CMakeFiles/bookmgmt_tests.dir/tests/test_v1_search.cpp.o
+[ 82%] Linking CXX executable bookmgmt_tests
+[ 82%] Built target bookmgmt_tests
+[ 85%] Linking CXX static library liblibracore_persistence.a
+[ 85%] Built target libracore_persistence
+[ 87%] Building CXX object CMakeFiles/libracore_db_tests.dir/tests/v2/test_postgres.cpp.o
+[ 92%] Building CXX object CMakeFiles/libracore_mapping_tests.dir/tests/v2/test_mapping.cpp.o
+[ 92%] Building CXX object CMakeFiles/_libracore.dir/bindings/module.cpp.o
+[ 95%] Linking CXX executable libracore_db_tests
+[ 95%] Built target libracore_db_tests
+[ 97%] Linking CXX executable libracore_mapping_tests
+[ 97%] Built target libracore_mapping_tests
+[100%] Linking CXX shared module python/_libracore.cpython-312-x86_64-linux-gnu.so
+[100%] Built target _libracore

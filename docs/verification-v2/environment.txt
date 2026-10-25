@@ -1,0 +1,9 @@
+Delivery verification: 25 October 2026 (Asia/Kolkata)
+GCC 13.3.0
+CMake 4.4.4
+Python 3.12.14
+Linux 6.18.55 x86_64
+Final benchmark CPU: AMD EPYC 9V74 80-Core Processor; 9 virtual CPUs exposed
+CMAKE_BUILD_TYPE unset
+libpqxx 7.8.1; libpq 16.15; nlohmann-json 3.11.3; pybind11 2.13.6
+No Docker daemon/CLI available; no PostgreSQL server installed.

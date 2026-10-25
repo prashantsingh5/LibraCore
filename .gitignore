@@ -41,20 +41,16 @@ CTestTestfile.cmake
 core
 core.*
 *.dmp
-
-# Environment / secrets
-.env
-.env.*
+.env*
 !.env.example
-
-# Python / virtual environments
-.venv/
-venv/
 __pycache__/
 *.pyc
 .pytest_cache/
-
-# Logs / coverage
-*.log
+.venv/
+venv/
+*.egg-info/
 coverage/
 htmlcov/
+*.log
+.vscode/
+.idea/

@@ -12,6 +12,8 @@
 
 namespace bookmgmt {
 
+struct PersistenceAccess; // V2 adapter: trusted relational state restoration only.
+
 enum class AcquisitionStatus { Requested, Approved, Rejected, Cancelled };
 
 struct PurchaseRequest {
@@ -134,6 +136,7 @@ public:
     void printReport(std::ostream& os) const;
 
 private:
+    friend struct PersistenceAccess;
     struct PriceChoice {
         Money preTaxCost;
         std::optional<VendorOffer> offer;

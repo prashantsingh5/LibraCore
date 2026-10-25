@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=75,<81"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "libracore-api"
+version = "2.0.0"
+requires-python = ">=3.11"
+dependencies = ["fastapi==0.115.12", "pydantic-settings==2.8.1", "uvicorn==0.34.0", "psycopg[binary]==3.2.6", "google-genai==1.11.0", "openai==1.72.0"]
+[project.optional-dependencies]
+test = ["pytest==8.3.5", "httpx==0.28.1", "pybind11==2.13.6"]
+[tool.setuptools.packages.find]
+where = ["python"]
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]
+markers = ["database: requires an explicitly configured isolated PostgreSQL test database", "binding: requires compiled C++ binding"]
