@@ -14,12 +14,19 @@ class Assistant:
     def message(self, message, session):
         if not self.settings.ai_enabled:
             raise DomainError('AI_DISABLED','AI is disabled')
-        reply=self.provider.interpret(message,declarations())
+        declared=declarations()
+        if hasattr(type(self.service),'allowed_tools'):
+            from ..v3.policy import require_principal
+            session=require_principal().session_id
+            declared=self.service.allowed_tools(declared)
+        if hasattr(type(self.service),'assistant_intent_check'): self.service.assistant_intent_check(message)
+        reply=self.provider.interpret(message,declared)
         if len(reply.calls)>1:
             raise DomainError('INVALID_TOOL','At most one operation per assistant message')
         result={'provider':asdict(reply.metadata),'tool_calls':[],'tool_results':[],'confirmations':[]}
         for call in reply.calls:
             tool,args=validate_call(call)
+            if hasattr(type(self.service),'assistant_authorize'): self.service.assistant_authorize(tool.name,args)
             result['tool_calls'].append({'name':tool.name,'arguments':args,'classification':tool.action.value})
             if tool.action != Action.READ and not self.settings.ai_write_actions_enabled:
                 raise DomainError('AI_WRITE_DISABLED','AI write actions are disabled')
@@ -36,6 +43,10 @@ class Assistant:
     def confirm(self, token, session):
         if not self.settings.ai_enabled or not self.settings.ai_write_actions_enabled:
             raise DomainError('AI_WRITE_DISABLED','AI write actions are disabled')
+        if hasattr(type(self.service),'allowed_tools'):
+            from ..v3.policy import require_principal
+            session=require_principal().session_id
         name,args=self.confirmations.consume(token,session)
+        if hasattr(type(self.service),'assistant_authorize'): self.service.assistant_authorize(name,args)
         # No model invocation and no parameter replacement on this route.
         return ToolOutput(operation=name,result=validate_output(name,self.service.execute(name,args))).model_dump()

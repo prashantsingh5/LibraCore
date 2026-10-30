@@ -54,3 +54,18 @@ htmlcov/
 *.log
 .vscode/
 .idea/
+# V3 local/runtime outputs
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/test-results/
+frontend/playwright-report/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.v3-test-*
+# Intentionally retained release verification evidence
+!docs/verification-v3/*.log
+var/media/
+!docs/verification-polish/*.log

@@ -23,7 +23,7 @@ def snapshot(settings):
 def test_migrations_idempotent(db,dbsettings):
     migrate(dbsettings.db_url(True));migrate(dbsettings.db_url(True))
     with psycopg.connect(dbsettings.db_url(True)) as c:
-        assert c.execute('SELECT count(*) FROM schema_migrations').fetchone()[0]==2
+        assert c.execute('SELECT count(*) FROM schema_migrations').fetchone()[0]==len(list((ROOT/'database/migrations').glob('*.sql')))
         assert c.execute("SELECT count(*) FROM pg_indexes WHERE schemaname='public'").fetchone()[0]>20
 
 @pytest.mark.parametrize('rid,kind',[('B001','Book'),('J001','Journal'),('E001','EBook'),('A001','AudioBook'),('T001','Thesis'),('D001','ElectronicResource')])
@@ -171,7 +171,7 @@ def test_schema_rejects_bad_state(db,dbsettings):
 
 def test_cpp_repository_executable(db,dbsettings):
     env={**os.environ,'TEST_DATABASE_URL':dbsettings.db_url(True)}
-    subprocess.run([str(ROOT/'build-v2/libracore_db_tests')],env=env,check=True)
+    subprocess.run([str(ROOT/os.environ.get('LIBRACORE_BUILD_DIR','build-v2')/'libracore_db_tests')],env=env,check=True)
 
 def test_concurrent_quota(db,dbsettings):
     db.execute('set_quota',{'department_id':'Computer Science','category':0,'max_units':1,'max_spend':100000,'max_titles':1})

@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=(ROOT / '.env.example', ROOT / '.env'), extra='ignore', case_sensitive=False, hide_input_in_errors=True)
-    libracore_env: str = 'development'
+    libracore_env: Literal['development','test','production'] = 'development'
     libracore_log_level: str = 'INFO'
     postgres_host: str = 'localhost'
     postgres_port: int = 5432
@@ -18,12 +18,14 @@ class Settings(BaseSettings):
     database_url: SecretStr = SecretStr('')
     test_postgres_db: str = 'libracore_test'
     test_database_url: SecretStr = SecretStr('')
+    public_origin: str = 'http://localhost:5173'
+    media_root: str = 'var/media'
     api_host: str = '127.0.0.1'
     api_port: int = 8000
     ai_enabled: bool = True
     llm_provider: Literal['auto', 'gemini', 'openai', 'mock'] = 'auto'
     gemini_api_key: SecretStr = SecretStr('')
-    gemini_model: str = ''
+    gemini_model: str = 'gemini-2.5-flash'
     openai_api_key: SecretStr = SecretStr('')
     openai_model: str = ''
     llm_fallback_on_error: bool = False

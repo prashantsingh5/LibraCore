@@ -2,6 +2,7 @@
 #include <nlohmann/json.hpp>
 #include <stdexcept>
 #include <string>
+#include <memory>
 namespace libracore {
 using Json = nlohmann::json;
 struct Error : std::runtime_error {
@@ -17,6 +18,7 @@ public:
   virtual Json execute(const std::string &operation,
                        const Json &parameters) = 0;
 };
+class ConnectionPool;
 class PostgresRepository final : public IRepository {
 public:
   explicit PostgresRepository(std::string connection);
@@ -24,6 +26,7 @@ public:
 
 private:
   std::string connection_;
+  std::shared_ptr<ConnectionPool> pool_;
 };
 Json money(std::int64_t minor, const std::string &currency);
 Json validateResource(const Json &);

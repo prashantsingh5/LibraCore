@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "$(dirname "$0")/common.sh"
-activate_project
+source "$(dirname "$0")/v3_common.sh"
+v3_activate
 python - <<'PY'
 from libracore_api.config import Settings
 from libracore_api.ai.providers import make_provider

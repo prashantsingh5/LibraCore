@@ -12,9 +12,9 @@ void validateNumericInputs(const Json &value) {
     "unit_price_minor", "platform_fee_minor", "price_minor", "total_minor",
     "max_spend", "new_allocation", "minor_units"};
   static const std::set<std::string> integerKeys = {
-    "quantity", "category", "publication_year", "edition", "binding", "issues_per_year",
+    "initial_holdings", "quantity", "category", "publication_year", "edition", "binding", "issues_per_year",
     "subscription_years", "license", "format", "duration_minutes", "estimated_delivery_days",
-    "fiscal_year", "max_units", "max_titles", "carry_percent", "order_id", "limit", "offset",
+    "fiscal_year", "max_units", "max_titles", "carry_percent", "order_id", "limit", "offset", "before",
     "from_year", "to_year", "print_tax", "electronic_tax", "loan_days"};
   if (value.is_array()) {
     for (const auto &item : value) validateNumericInputs(item);

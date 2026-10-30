@@ -1,0 +1,68 @@
+name: LibraCore V3 verification
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    env:
+      LLM_PROVIDER: mock
+      RUN_LIVE_AI_TESTS: 'false'
+      LIBRACORE_RUN_DB_TESTS: '1'
+      POSTGRES_PASSWORD: ci_ephemeral_password
+      POSTGRES_USER: libracore
+      POSTGRES_DB: libracore
+      POSTGRES_HOST: localhost
+    services:
+      postgres:
+        image: postgres:16.6
+        env:
+          POSTGRES_DB: libracore
+          POSTGRES_USER: libracore
+          POSTGRES_PASSWORD: ci_ephemeral_password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U libracore -d libracore"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12', cache: pip, cache-dependency-path: requirements-v3-lock.txt}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22', cache: npm, cache-dependency-path: frontend/package-lock.json}
+      - run: sudo apt-get update && sudo apt-get install -y libpq-dev libpqxx-dev nlohmann-json3-dev
+      - run: |
+          python -m venv .venv
+          .venv/bin/pip install -r requirements-v3-lock.txt
+          .venv/bin/pip install --no-deps -e '.[test]'
+          npm --prefix frontend ci
+          cd frontend && npx playwright install --with-deps chromium
+      - name: Native, Python and frontend verification
+        run: |
+          source scripts/v3_common.sh
+          v3_activate
+          v3_build
+          ctest --test-dir build-v3 --output-on-failure
+          ./build-v3/bookmgmt_fault_tests
+          python -m libracore_api.database --create-test --test
+          python -m unittest discover -s python/tests_v3/unit -v
+          python -m pytest python/tests python/tests_v3 --cov=libracore_api.v3 --cov-report=xml -ra
+          python -m ruff check python/libracore_api/v3 python/tests_v3
+          python -m mypy python/libracore_api/v3 --follow-imports=silent --ignore-missing-imports
+          npm --prefix frontend run lint
+          npm --prefix frontend run typecheck
+          npm --prefix frontend run coverage
+          npm --prefix frontend run build
+          ./scripts/e2e_v3.sh
+      - name: Production image builds
+        run: |
+          docker build -f docker/Dockerfile.backend -t libracore-api:ci .
+          docker build -f frontend/Dockerfile -t libracore-web:ci .
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-reports
+          path: |
+            coverage.xml
+            frontend/coverage/
+            frontend/playwright-report/

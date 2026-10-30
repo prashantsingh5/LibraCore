@@ -84,7 +84,7 @@ class GeminiLLMProvider:
         except Exception as exc:
             # SDK messages can include request metadata; never expose them.
             code = 'PROVIDER_QUOTA' if getattr(exc, 'code', None) == 429 else 'PROVIDER_ERROR'
-            raise DomainError(code, 'Gemini request failed; no action was executed') from None
+            raise DomainError(code, 'The AI service is temporarily unavailable. No library action was performed.') from None
 
 class OpenAILLMProvider:
     def __init__(self, settings, client=None):
@@ -106,7 +106,7 @@ class OpenAILLMProvider:
             return LLMResponse(calls, ProviderMetadata('openai', self.model))
         except Exception as exc:
             code = 'PROVIDER_QUOTA' if getattr(exc, 'status_code', None) == 429 else 'PROVIDER_ERROR'
-            raise DomainError(code, 'OpenAI request failed; no action was executed') from None
+            raise DomainError(code, 'The AI service is temporarily unavailable. No library action was performed.') from None
 
 def make_provider(settings):
     return {'mock': MockLLMProvider, 'gemini': lambda: GeminiLLMProvider(settings),

@@ -14,6 +14,8 @@ class Page(Input):
     offset: int = Field(0, ge=0)
 
 class Search(Page):
+    after: str = ''
+    available_only: bool = False
     title: str = ''
     author: str = ''
     identifier: str = ''
@@ -73,6 +75,7 @@ class Return(LoanId):
     _utc = field_validator('returned_at')(Borrow.utc.__func__)
 
 class Resource(Input):
+    initial_holdings: int = Field(0, strict=True, ge=0, le=2147483647)
     resource_id: Id
     resource_type: Literal['Book','Journal','ElectronicResource','EBook','AudioBook','Thesis']
     title: Annotated[str, Field(min_length=1)]

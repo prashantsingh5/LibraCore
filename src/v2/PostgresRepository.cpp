@@ -4,9 +4,43 @@
 #include <limits>
 #include <pqxx/pqxx>
 #include <set>
+#include <condition_variable>
+#include <mutex>
+#include <vector>
 using namespace bookmgmt;
 namespace libracore {
+// Bounded RAII leases. Transaction is destroyed before connection returns to pool.
+class ConnectionPool {
+  std::mutex mutex_;
+  std::condition_variable ready_;
+  std::vector<std::unique_ptr<pqxx::connection>> idle_;
+  unsigned count_=0;
+  std::string url_;
+public:
+  explicit ConnectionPool(std::string url):url_(std::move(url)) {}
+  std::unique_ptr<pqxx::connection> acquire() {
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (!ready_.wait_for(lock,std::chrono::seconds(5),[&]{return !idle_.empty() || count_<4;}))
+      throw Error("DATABASE_ERROR","Database connection pool busy");
+    if (!idle_.empty()) { auto c=std::move(idle_.back());idle_.pop_back();return c; }
+    ++count_; lock.unlock();
+    try {return std::make_unique<pqxx::connection>(url_);}
+    catch (...) {lock.lock();--count_;ready_.notify_one();throw;}
+  }
+  void release(std::unique_ptr<pqxx::connection> c) noexcept {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (c && c->is_open()) {try {idle_.push_back(std::move(c));} catch (...) {--count_;}}
+    else --count_;
+    ready_.notify_one();
+  }
+};
 namespace {
+struct Lease {
+  std::shared_ptr<ConnectionPool> pool;
+  std::unique_ptr<pqxx::connection> connection;
+  explicit Lease(std::shared_ptr<ConnectionPool> p):pool(std::move(p)),connection(pool->acquire()) {}
+  ~Lease() {pool->release(std::move(connection));}
+};
 Json rows(const pqxx::result &r) {
   Json a = Json::array();
   for (auto x : r)
@@ -197,19 +231,22 @@ Json search(pqxx::work &t, const Json &p) {
        "ts_rank(to_tsvector('simple',r.title||' "
        "'||r.publisher),plainto_tsquery('simple',$8)) DESC,r.resource_id"}};
   const auto sort = text(p, "sort", "id");
+  if (!text(p,"after").empty() && (sort!="id" || offset(p)!=0 || !text(p,"q").empty()))
+    throw std::invalid_argument("Cursor requires id sort and zero offset");
   if (!sorts.count(sort))
     throw std::invalid_argument("invalid sort");
   std::string where =
       R"SQL( WHERE ($1='%%' OR lower(r.title) LIKE lower($1) ESCAPE '\')
  AND ($2='%%' OR EXISTS(SELECT 1 FROM resource_authors ra JOIN authors a USING(author_id) WHERE ra.resource_id=r.resource_id AND lower(a.name) LIKE lower($2) ESCAPE '\'))
- AND ($3='' OR d.isbn=$3 OR d.issn=$3) AND ($4=-1 OR r.category=$4) AND r.publication_year BETWEEN $5 AND $6
- AND ($7='' OR r.currency=$7) AND ($8='' OR to_tsvector('simple',r.title||' '||r.publisher) @@ plainto_tsquery('simple',$8)
+ AND ($3='' OR r.resource_id=$3 OR d.isbn=$3 OR d.issn=$3) AND ($4=-1 OR r.category=$4) AND r.publication_year BETWEEN $5 AND $6
+ AND ($7='' OR r.currency=$7) AND ($8='' OR r.resource_id=$8 OR d.isbn=$8 OR d.issn=$8 OR lower(r.title) LIKE lower($13) ESCAPE '\' OR lower(r.publisher) LIKE lower($13) ESCAPE '\' OR to_tsvector('simple',r.title||' '||r.publisher) @@ plainto_tsquery('simple',$8)
  OR EXISTS(SELECT 1 FROM resource_authors ra JOIN authors a USING(author_id) WHERE ra.resource_id=r.resource_id AND to_tsvector('simple',a.name) @@ plainto_tsquery('simple',$8))))SQL";
+  where += " AND ($11='' OR r.resource_id>$11) AND (NOT $12::boolean OR r.holdings>r.lent)";
   auto query = [&](const std::string &sql) {
     return t.exec_params(sql, pattern(text(p, "title")),
                          pattern(text(p, "author")), text(p, "identifier"),
                          p.value("category", -1), from, to, text(p, "currency"),
-                         text(p, "q"), limit(p), offset(p));
+                         text(p, "q"), limit(p), offset(p),text(p,"after"),p.value("available_only",false),pattern(text(p,"q")));
   };
   // Check all matching rows, not just one page, before currency-sensitive
   // sorting.
@@ -221,10 +258,11 @@ Json search(pqxx::work &t, const Json &p) {
       throw std::invalid_argument("cannot sort mixed currencies by price");
   }
   auto result = rows(query(resourceSelect + where + " ORDER BY " +
-                           sorts.at(sort) + " LIMIT $9 OFFSET $10"));
+                           (text(p,"q").empty() ? std::string{} : "CASE WHEN r.resource_id=$8 THEN 0 ELSE 1 END,") + sorts.at(sort) + " LIMIT $9 OFFSET $10"));
   for (auto &r : result)
     r["price"] = money(r["unit_price_minor"], r["currency"]);
-  return {{"items", result}, {"limit", limit(p)}, {"offset", offset(p)}};
+  return {{"items", result}, {"limit", limit(p)}, {"offset", offset(p)},
+          {"next_cursor", result.size()==static_cast<std::size_t>(limit(p)) && sort=="id" && text(p,"q").empty() ? result.back()["resource_id"] : Json(nullptr)}};
 }
 Json dispatch(pqxx::work &t, const std::string &op, const Json &p) {
   if (op == "health_check") {
@@ -243,18 +281,37 @@ Json dispatch(pqxx::work &t, const std::string &op, const Json &p) {
             {"borrowed", j["lent"]},
             {"available", j["holdings"].get<int>() - j["lent"].get<int>()}};
   }
+  if (op == "get_events_cursor") {
+    auto result=rows(t.exec_params("SELECT to_jsonb(e)||jsonb_build_object('title',r.title) FROM audit_events e LEFT JOIN resources r USING(resource_id) WHERE ($1::bigint=0 OR event_id<$1) ORDER BY event_id DESC LIMIT $2",p.value("before",std::int64_t(0)),limit(p)));
+    return {{"items",result},{"next_cursor",result.size()==static_cast<std::size_t>(limit(p)) ? result.back()["event_id"] : Json(nullptr)}};
+  }
   if (op == "get_recent_events")
     return rows(
-        t.exec_params("SELECT to_jsonb(e) FROM audit_events e ORDER BY "
+        t.exec_params("SELECT to_jsonb(e)||jsonb_build_object('title',r.title) FROM audit_events e LEFT JOIN resources r USING(resource_id) ORDER BY "
                       "occurred_at DESC,event_id DESC LIMIT $1 OFFSET $2",
                       limit(p), offset(p)));
+  if (op == "update_vendor") {
+    auto check=resource({{"resource_id","vendor-validation"},{"resource_type","Book"},{"title","Vendor validation"},{"currency","INR"},{"unit_price_minor",0}});
+    check->addVendor({text(p,"name"),Money::fromMinor(0,"INR"),text(p,"vendor_id"),p.at("rating").get<double>(),p.at("estimated_delivery_days").get<int>()});
+    return one(t.exec_params("UPDATE vendors SET name=$2,rating=$3,estimated_delivery_days=$4 WHERE vendor_id=$1 RETURNING to_jsonb(vendors)",text(p,"vendor_id"),text(p,"name"),p.at("rating").get<double>(),p.at("estimated_delivery_days").get<int>()));
+  }
+  if (op == "list_users")
+    return rows(t.exec_params("SELECT to_jsonb(u) FROM users u ORDER BY user_id LIMIT $1 OFFSET $2",limit(p),offset(p)));
+  if (op == "list_departments")
+    return rows(t.exec_params("SELECT to_jsonb(d) FROM departments d ORDER BY department_id LIMIT $1 OFFSET $2",limit(p),offset(p)));
+  if (op == "list_vendors")
+    return rows(t.exec_params("SELECT to_jsonb(v) FROM vendors v ORDER BY vendor_id LIMIT $1 OFFSET $2",limit(p),offset(p)));
+  if (op == "list_loans")
+    return rows(t.exec_params("SELECT to_jsonb(l)||jsonb_build_object('title',r.title) FROM loans l LEFT JOIN resources r USING(resource_id) ORDER BY borrowed_at DESC,loan_id LIMIT $1 OFFSET $2",limit(p),offset(p)));
+  if (op == "list_orders")
+    return rows(t.exec_params("SELECT to_jsonb(r)||jsonb_build_object('current_status',CASE WHEN c.order_id IS NULL THEN r.status ELSE 3 END,'cancellation_order_id',c.order_id,'cost',jsonb_build_object('minor_units',r.post_tax_minor,'currency',r.currency)) FROM purchase_records r LEFT JOIN purchase_records c ON c.related_order_id=r.order_id WHERE ($1='' OR r.requested_department=$1) ORDER BY r.order_id DESC LIMIT $2 OFFSET $3",text(p,"department_id"),limit(p),offset(p)));
   if (op == "get_user_loans")
     return rows(
-        t.exec_params("SELECT to_jsonb(l) FROM loans l WHERE borrower_id=$1 "
+        t.exec_params("SELECT to_jsonb(l)||jsonb_build_object('title',r.title) FROM loans l LEFT JOIN resources r USING(resource_id) WHERE borrower_id=$1 "
                       "ORDER BY loan_id LIMIT $2 OFFSET $3",
                       text(p, "user_id"), limit(p), offset(p)));
   if (op == "get_loan")
-    return one(t.exec_params("SELECT to_jsonb(l) FROM loans l WHERE loan_id=$1",
+    return one(t.exec_params("SELECT to_jsonb(l)||jsonb_build_object('title',r.title) FROM loans l LEFT JOIN resources r USING(resource_id) WHERE loan_id=$1",
                              text(p, "loan_id")));
   if (op == "get_order") {
     auto j = one(t.exec_params(
@@ -288,7 +345,18 @@ Json dispatch(pqxx::work &t, const std::string &op, const Json &p) {
     return {{"created", items.size()}};
   }
   if (op == "create_resource" || op == "update_resource") {
+    const int opening = p.value("initial_holdings", 0);
+    if (opening < 0 || (op == "update_resource" && opening != 0))
+      throw std::invalid_argument("Opening stock is nonnegative and create-only");
     saveResource(t, p, op == "update_resource");
+    if (opening) {
+      // Existing owned stock, not a purchase: validate through the domain.
+      Catalog openingCatalog;
+      openingCatalog.add(resource(p));
+      openingCatalog.addHoldings(text(p,"resource_id"), opening);
+      t.exec_params("UPDATE resources SET holdings=$2 WHERE resource_id=$1",
+                    text(p,"resource_id"), openingCatalog.holdings(text(p,"resource_id")));
+    }
     return getResource(t, p.at("resource_id"));
   }
   if (op == "delete_resource") {
@@ -413,7 +481,7 @@ Json dispatch(pqxx::work &t, const std::string &op, const Json &p) {
       ids.insert(q.at("resource_id"));
   if (op == "return_loan") {
     auto l =
-        one(t.exec_params("SELECT to_jsonb(l) FROM loans l WHERE loan_id=$1",
+        one(t.exec_params("SELECT to_jsonb(l)||jsonb_build_object('title',r.title) FROM loans l LEFT JOIN resources r USING(resource_id) WHERE loan_id=$1",
                           text(p, "loan_id")));
     ids.insert(l["resource_id"]);
   }
@@ -433,7 +501,7 @@ Json dispatch(pqxx::work &t, const std::string &op, const Json &p) {
     cat.add(resource(j));
     PersistenceAccess::holdings(cat, id, j["holdings"], j["lent"]);
     for (auto l : rows(t.exec_params(
-             "SELECT to_jsonb(l) FROM loans l WHERE resource_id=$1", id)))
+             "SELECT to_jsonb(l)||jsonb_build_object('title',r.title) FROM loans l LEFT JOIN resources r USING(resource_id) WHERE resource_id=$1", id)))
       PersistenceAccess::restoreLoan(cat, loan(l));
   }
   for (auto j : rows(t.exec(
@@ -455,8 +523,12 @@ Json dispatch(pqxx::work &t, const std::string &op, const Json &p) {
       throw std::invalid_argument("invalid vendor selection");
     return modes.at(v);
   };
-  if (op == "get_budget_summary" || op == "get_department_budget")
-    return budgetSummary(b);
+  if (op == "get_budget_summary" || op == "get_department_budget") {
+    auto summary = budgetSummary(b);
+    summary["fiscal_year"] = budgetRows.at(dept).at("fiscal_year");
+    summary["department_id"] = dept;
+    return summary;
+  }
   if (op == "get_acquisition_summary") {
     auto s = acq.summary();
     return {{"approved", s.approved},
@@ -470,12 +542,25 @@ Json dispatch(pqxx::work &t, const std::string &op, const Json &p) {
   if (op == "quote_purchase" || op == "check_purchase") {
     auto cost = acq.quote(text(p, "resource_id"), p.at("quantity"), mode(p));
     Json q = {{"cost", money(cost.minorUnits(), cost.currency())}};
+    AcquisitionManager untaxed(cat,b,{0,0});
+    auto pre=untaxed.quote(text(p,"resource_id"),p.at("quantity"),mode(p));
+    q["pre_tax"]=money(pre.minorUnits(),pre.currency());
+    auto tax=cost-pre;
+    q["tax"]=money(tax.minorUnits(),tax.currency());
+    q["title"]=cat.get(text(p,"resource_id")).title();
+    q["quantity"]=p.at("quantity");
+    q["budget_before"]=budgetSummary(b);
+    if (auto v=cat.get(text(p,"resource_id")).selectVendor(mode(p)))
+      q["selected_vendor"]={{"vendor_id",v->vendorId},{"name",v->vendor},
+                            {"price",money(v->price.minorUnits(),v->price.currency())},{"rating",v->rating},{"estimated_delivery_days",v->deliveryDays}};
+    else q["selected_vendor"]=nullptr;
     if (op == "check_purchase") {
       std::string reason;
       try {
         auto simulated = b;
         simulated.commit(cat.get(text(p, "resource_id")).category(),
                          text(p, "resource_id"), p.at("quantity"), cost);
+        q["budget_after"]=budgetSummary(simulated);
         if (p.at("quantity").get<int>() >
             std::numeric_limits<int>::max() -
                 cat.holdings(text(p, "resource_id")))
@@ -569,6 +654,8 @@ Json dispatch(pqxx::work &t, const std::string &op, const Json &p) {
     out = loan(cat.loan(text(p, "loan_id")));
   } else
     throw Error("UNKNOWN_OPERATION", "Unknown application operation");
+  if (op == "borrow_resource" || op == "return_loan")
+    out["title"] = cat.get(text(out,"resource_id")).title();
   for (auto &[d, value] : budgets)
     saveBudget(t, budgetRows.at(d).at("budget_id"), value);
   for (auto *r : cat.all())
@@ -608,12 +695,18 @@ PostgresRepository::PostgresRepository(std::string c)
     : connection_(std::move(c)) {
   if (connection_.empty())
     throw Error("CONFIGURATION", "Database URL is required");
+  if (connection_.find("connect_timeout=")==std::string::npos) {
+    if (connection_.rfind("postgres",0)==0)
+      connection_+=(connection_.find('?')==std::string::npos ? "?" : "&")+std::string("connect_timeout=5");
+    else connection_+=" connect_timeout=5";
+  }
+  pool_=std::make_shared<ConnectionPool>(connection_);
 }
 Json PostgresRepository::execute(const std::string &op, const Json &p) {
   try {
     validateNumericInputs(p);
-    pqxx::connection c(connection_);
-    pqxx::work t(c);
+    Lease lease(pool_);
+    pqxx::work t(*lease.connection);
     if (op == "search_resources")
       t.exec("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ");
     t.exec("SET LOCAL TIME ZONE 'UTC'");

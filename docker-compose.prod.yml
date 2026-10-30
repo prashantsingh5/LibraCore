@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:16.6
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-libracore}
+      POSTGRES_USER: ${POSTGRES_USER:-libracore}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a unique database password}
+    volumes: [libracore_prod:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    build: {context: ., dockerfile: docker/Dockerfile.backend}
+    env_file: .env
+    environment: {POSTGRES_HOST: postgres, LIBRACORE_ENV: production, AI_ENABLED: 'false', DATABASE_URL: ''}
+    command: [python, -m, libracore_api.database]
+    depends_on: {postgres: {condition: service_healthy}}
+  backend:
+    build: {context: ., dockerfile: docker/Dockerfile.backend}
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+      DATABASE_URL: ''
+      LIBRACORE_ENV: production
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?Set the HTTPS origin}
+      API_HOST: 0.0.0.0
+      API_PORT: '8000'
+      MEDIA_ROOT: /app/var/media
+    depends_on: {migrate: {condition: service_completed_successfully}}
+    volumes: [libracore_media:/app/var/media]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+  frontend:
+    build: {context: ., dockerfile: frontend/Dockerfile}
+    ports: ['127.0.0.1:8080:8080']
+    depends_on: {backend: {condition: service_healthy}}
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    restart: unless-stopped
+volumes:
+  libracore_prod:
+  libracore_media:
